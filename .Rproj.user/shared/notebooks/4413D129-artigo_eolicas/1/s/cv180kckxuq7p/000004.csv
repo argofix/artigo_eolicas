@@ -1,0 +1,4 @@
+"0","parques_projetados <- readOGR(""dados/shapes/EOL___Expansao_Planejada.shp"", verbose = FALSE)
+"
+"2","Error in ogrListLayers(dsn = dsn) : Cannot open data source
+"

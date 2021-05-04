@@ -1,0 +1,33 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1620064006057.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "CA4912D2",
+    "lastKnownWriteTime" : 1620052424,
+    "last_content_update" : 1620064006057,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "28D7AC5A",
+        "caption" : "estados_sf",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=estados_sf&cache_key=28D7AC5A",
+        "displayedObservations" : "27",
+        "environment" : "",
+        "expression" : "estados_sf",
+        "object" : "estados_sf",
+        "preview" : "0",
+        "totalObservations" : "27",
+        "variables" : "6"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
