@@ -3,10 +3,6 @@ title: "A energia eólica no Brasil"
 author: "Arlindo Gomes Filho"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  word_document:
-    toc: yes
-  pdf_document:
-    toc: yes
   html_document:
     highlight: textmate
     number_sections: no
@@ -15,6 +11,10 @@ output:
     toc_float:
       collapsed: yes
       smooth_scroll: no
+  pdf_document:
+    toc: yes
+  word_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -64,7 +64,7 @@ Neste cenário, os principais desafios para a expansão da transmissão incluem 
 
 A capacidade instalada de geração de energia elétrica do Brasil em 2019 foi de 164 KWh, com 154 mil km de linhas de transmissão e 385 mil MVA em subestações. A matriz eletro-energética brasileira em 2020 apresentava a seguinte composição:
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
 
 mycolors <- c("#dbead5", "#A2D8A2", "#677E67","#458B41")
 
@@ -101,10 +101,10 @@ A exploração econômica da energia eólica depende da existência e disponibil
 Os dados relativos ao comportamento do vento, que auxiliam na determinação do potencial eólico da
 região, são relativos à intensidade da velocidade e à direção do vento. Para obter esses dados, é necessário também analisar os fatores que influenciam o regime dos ventos na localidade do empreendimento. Dentre eles, pode-se citar o relevo, a rugosidade do solo e outros obstáculos distribuídos ao longo da região.[Plano Nacional de Energia 2030]  
 
-Os estudos de potencial eólico são fundamentais para o planejamento da implantação de empreendimentos eólicos no país. O primeiro Atlas do Potencial Eólico Brasileiro, publicado em 2001, estimou um potencial eólico para o país da ordem de 143,5 GW (Figura 2), com as regiões Nordeste (75 GW - 52,3%), Sudeste (29,7 GW - 20,7%) e Sul (22,8 GW - 15,8%) respondendo por 88,8% desse total. [Norte 12,8 GW - 8.9%; Centro-Oeste 3.1 GW - 2,1%]
+Os estudos de potencial eólico são fundamentais para o planejamento da implantação de empreendimentos eólicos no país. O primeiro Atlas do Potencial Eólico Brasileiro estimou um potencial eólico para o país da ordem de 143,5 GW (Figura 2), com as regiões Nordeste (75 GW - 52,3%), Sudeste (29,7 GW - 20,7%) e Sul (22,8 GW - 15,8%) respondendo por 88,8% desse total. O potencial estimado para as regiões Norte e Centro-Oeste foi de 12,8 GW (8.9%) e 3.1 GW (2,1%), respectivamente.
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
 
 # potencial_eolico <- data.frame(
 #   regiao = c("Nordeste", "Sudeste", "Sul", "Norte", "Centro-Oeste"),
@@ -129,9 +129,9 @@ Os estudos de potencial eólico são fundamentais para o planejamento da implant
 ```
 
 
-Figura 2. Distribuição do potencial eólico das diferentes regiões do país.
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
 
 estados_sf <- st_read("dados/shapes/estados_2010.shp", quiet = TRUE)
 
@@ -145,7 +145,7 @@ estados_sf <- rename(estados_sf, regiao = regiao_id)
 
 potencial_eolico <- data.frame(
   regiao = c("Nordeste", "Sudeste", "Sul", "Norte", "Centro-Oeste"),
-  valor = c(75, 29.7, 22.8, 12.8, 3.1)
+  valor = c(75.0, 29.7, 22.8, 12.8, 3.1)
 )
 
 estados_sf_completo <- estados_sf %>% 
@@ -182,27 +182,44 @@ potencial_vento <- leaflet(estados_sf_completo) %>%
    addLegend(values = ~estados_sf_completo$valor,
             pal = qpal,
             position = "bottomleft",
-            title = "Potencial de vento")
+            title = "Potencial eólico (GW)")
 
 potencial_vento
 ```
 
-
+Figura 2. Distribuição do potencial eólico das regiões do país (Fonte: Atlas do Potencial Eólico Brasileiro - CEPEL, 2001)
 
 A região Nordeste apresenta as melhores condições do Brasil para o aproveitamento da energia eólica. Nessa região, não apenas os regimes dos ventos são muito favoráveis, mas a vazão dos rios que atendem algumas usinas hidrelétricas é menor justamente quando ocorrem as melhores incidências de vento, demonstrando a complementariedade dessas fontes. [Plano Nacional de Energia 2030]  
 
-Versão atualizada do atlas, com informações mais refinadas e com estimativas para diveras faixas de altura, contemplando aquelas condizentes com aerogeradores mais modernos (100, 120, 150 e 200 metros), pode ser consultada no sítio eletrônico [Atlas Eólico Brasileiro - Simulações 2013](http://novoatlas.cepel.br/). Há também estudos específicos disponíveis para alguns estados (????).  
+Uma versão atualizada do Atlas de Potencial Eólico Brasileiro com informações mais refinadas e com estimativas para diversas faixas de altura, contemplando inclusive aquelas condizentes com aerogeradores mais modernos (100, 120, 150 e 200 metros), pode ser consultada no sítio eletrônico [Atlas Eólico Brasileiro - Simulações 2013](http://novoatlas.cepel.br/). Além dessas informações em escala nacional, alguns estados como ????????? contam com estudos específicos (????).  
 
 ## Cenário atual da energia eólica no país 
 
+A energia elétrica de origem eólica é gerada por meio de aerogeradores ou turbinas eólicas. Essas estruturas devem estar distribuidas em áreas com abundância de ventos em condições favoráveis, devendo ainda estar ligadas a estururas associadas como subestações e linhas de transmissão, para escoamento da energia produzida.  
 
-Os primeiros parques eólicos brasileiros foram instalados nos anos 90. A tecnologia da época trabalhava com aerogeradores bem menores que os atuais e turbinas com potência inferior a 1 MW [descomissionamento]. A instituição do Programa de Incentivo às Fontes Alternativas de Energia Elétrica - PROINFA no início dos anos 2000 levou à implantação de novos parques eólicos, com a geração de cerca de mais 3.500 GWh de energia limpa para o país (Eletrobras, 2019). Na sequência, entre os anos de 2011 e 2020, por meio de Leilões e projetos do ACL, novos parques foram adicionados ao sistema, acrescentando mais de 14 GW de potência ao sistema elétrico brasileiro. O avanço tecnológico possibilitou o uso de aerogeradores maiores, com aumento da altura das torres, diâmetro dos rotores e maior potência unitária, aumentando a produtividade. **A participação da energia eólica na matriz elétrica brasileira saltou de 0,2% em 2002 para 9% em 2019, sendo a terceira fonte em capacidade instalada e a segunda dentre as renováveis. Até 2029 estima-se que esse número chegue a 17%, atingindo cerca de 40 GW (MME/EPE, 2020). [descomissionamento]**
+Em geral, os aerogeradores são formados pelas serguintes partes:
 
-Em fevereiro de 2021 o Brasil alcancou 695 parques eólicos e cerca de 8300 aerogeradores, totalizando 18 GW de capacidade instalada. Os números consideram usinas em pleno funcionamento e aquelas que operam em testes autorizados pela Agência Nacional de Energia Elétrica (ANEEL).[CicloVivo]
+* Pás: impusionadas pela força dos ventos, geralmente em conjunto de três que formam ângulo de 120º, com formato aerodinâmico propício para o giro dentro do intervalo de mínimo e máximo de velocidade para a qual foi designada. Podem ser constituídas de plásticos (PVC, PU ou PET, madeira balsa e fibra de vidro).  
 
-Segunda ou terceira fonte em capacidade instalada???
+* Nacele (ou nave): estrutura que abriga os componentes eletromecânicos (gerador, transformador, rotor, conversor, refrigerador, dentre outros). Situa-se junto ao eixo da hélice formada pelas pás, no qual a energia mecânica da rotação das pás é convertida em energia elétrica.  
 
-```{r echo=FALSE}
+* Torre: sustenta as pás e a nacele a uma altura variável, propícia para o recebimento dos ventos no local (de 10 a mais de 100 m [CEPEL, 2001]). Em geral, são feitas de aço e/ou concreto.
+
+**Um grupo de aerogeradores gerenciados conjuntamente forma um parque eólico e vários parques podem formar um complexo eólico.**
+
+O primeiro aerogerador do Brasil foi instalado em 1992, em Fernando de Noronha, para fins de pesquisa e, já no final dos anos 90, os primeiros parques eólicos comerciais entraram em funcionamento no país (ANEEL, 2003). 
+A tecnologia da época consistia em aerogeradores bem menores que os atuais e turbinas com potência inferior a 1 MW [descomissionamento]. Na primeira metadade dos anos 2000, com apoio do Programa de Incentivo às Fontes Alternativas de Energia Elétrica - PROINFA, novos parques foram implantados e, a partir de junho de 2006, a energia eólica gerada por esses parques (cerca de mais 3.500 GWh) passou a ser contabilizada no Interligado Nacional - SIN (Eletrobras, 2019).  
+
+Nos anos seguintes, de 2011 a 2020, por meio de Leilões e projetos do ACL, outros parques foram construídos e entraram em operação, sendo acrescidos mais de 14 GW de potência ao sistema elétrico brasileiro. Ao longo desse período, o avanço tecnológico possibilitou o uso de aerogeradores maiores, com aumento da altura das torres, do diâmetro dos rotores e uma maior potência unitária, com consequente aumento da produtividade.  
+
+Em fevereiro de 2021 o Brasil atingiu a marca de 695 parques eólicos e cerca de 8300 aerogeradores, totalizando aproximadamete 18 GW de capacidade instalada, considerando as usinas em pleno funcionamento e aquelas operando em testes autorizados pela ANEEL.[CicloVivo]  
+
+A participação da energia eólica na matriz elétrica brasileira saltou de 0,2% em 2002 para 9% em 2019, passando a ser a terceira fonte em capacidade instalada e a segunda dentre as renováveis. Estima-se que até 2029 esse número chegue a 17%, atingindo cerca de 40 GW (MME/EPE, 2020) [descomissionamento]  
+
+A figura 3 apresenta a evolução da geração de energia eólica no Brasil de 2006 a 2020, em termos de potência instalada por ano e potência acumulada.
+
+
+```{r, echo=FALSE, fig.align="center"}
 
 cres_eol <- read.csv2("dados/pot_anos.csv", h=T, sep=";")
 
@@ -223,7 +240,16 @@ y = "Potência GW")
 P1
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+Figura 3. Evolução da geração de energia eólica no Brasil de 2006 a 2020. 
+
+</br>
+
+Uma vez que as condições de vento e, consequentemente, o potencial eólico varia nas diferentes regiões do país, a distribuição espacial dos empreeendimentos eólicos tenderá a se correlacionar positivamente com o potencial eólico. Desta forma, apesar de atualmente os parques eólicos estarem distribuídos em 12 estados, há uma concentração de empreendimentos na regiões Nordeste e Sul, as duas regiões com condições de vento mais favoráveis à exploração comercial (Figura 4).  
+
+</br>
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
 
 parques_ativos <- readOGR("dados/shapes/EOL___Base_Existente.shp", verbose = FALSE)
 parques_projetados <- readOGR("dados/shapes/EOL___Expansão_Planejada.shp", verbose = FALSE)
@@ -233,7 +259,7 @@ eolicas_brasil <- leaflet() %>%
    addProviderTiles(providers$OpenStreetMap.Mapnik, group = "Open Street Map") %>%
   addCircleMarkers(data = parques_ativos,
                    color = "#EB0000",
-                   radius = 1.0,
+                   radius = 2.0,
                   weight = 1,
                   group = "Parques eólicos ativos")
               labelOptions = labelOptions(
@@ -260,10 +286,14 @@ eolicas_brasil
 
 ```
 
+Figura 4. Distribuição de parques eólicos em atividade e planejados no território brasileiro. Notar a concentração de empreendimentos nas regiões Nordeste e Sul.  
 
 
+Em termos de potência instalada destacam-se os estados de Rio Grande do Norte e Bahia, com potência instalada na faixa do 5000 GW (Figura 5). Um segundo bloco é composto por estados com potência instalada de cerca de 2000-2500 GW. Por fim, temos os estados com potência instalada na faixa de 1000 Gw ou menos (Pernambuco, Maranhão, Santa Catarina, Paraíba, Sergipe, Rio de Janeio e Paraná).  
 
-```{r echo=FALSE}
+</br>
+
+```{r echo=FALSE, fig.align="center"}
 
 cres_estados <- read.csv2("dados/pot_estados.csv", h=T, sep=";")
 
@@ -291,9 +321,16 @@ P2
 
 ```
 
+Figura 5. Distribuição da potência instalada de geração de energia eólica por estado. Rio Grande do Norte e Bahia se destacam, com potência instalada na faixa dos 5000 GW.  
+
+Considerando o total de parques eólicos construídos, a Bahia já superou o Rio Grande do Norte (Figura 6). Os dois estados juntos somam quase 50% do total de parques eólicos instalados no país.   
+
+O *ranking* também se altera no segundo bloco, com Ceará superando o Rio Grande do Sul e Piauí, em relação ao número total de parques instalados. Tais diferenças provavelmente estão relacionadas a diferenças nas tecnologias utilizadas em função da época de construção dos parques. Parques mais novos e mais modernos tendem a ser mais produtivos, de forma que um menor número de parques mais novos ou mesmo parques com um menor número de torres, podem, em determinadas condições, ser mais produtivos e gerar mais energia que parques utilizando tecnologias mais antigas.
+
+</br>
 
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.align="center"}
 
 P3 <-  ggplot(data = cres_estados, aes(x= fct_reorder(UF, parques, .desc = T), y = parques)) +
  geom_bar(stat = "identity", fill="#69b3a2") +
@@ -312,10 +349,21 @@ P3
 
 ```
 
+Figura 6. Número de parques eólicos instalados por estado. Bahia e Rio Grande do Norte se destacam, com valores superios a 150 parques.  
+
+</br>
+
+
+### Parques eólicos *offshore*
+
+?????
+
 
 ### O Brasil no cenário mundial
 
-??????
+A Dinamarca foi pioneira no uso comercial da energia eólica, tendo iniciado sua utilização na década de 70 (Aneel, 2003). Outros países europeus como Holanda, Bélgica, Suécia, Reino Unido e Alemanha também logo investiram nesse tipo de energia [Consultoria]. Posteriormente, inpulsionados pelo aumento da demanda por energia em razão do crescimento econômico, aliado à crises de oferta e preços de fontes não renováveis, em especial do petróleo, outros países como Estados Unidos, Espanha, Portugal e China também passaram a investir de forma significativa na exploração da energia eólica.
+
+O Brasil tem um grande potencial de exploração e, em pouco mais de duas décadas, teve um avanço muito significativo na sua capacidade instalada. Atualmente ocupa a ???? posição no *ranking* mundial de uso de energia eólica (Figura 7). Apesar do bom desempenho, encontra-se distante de países também continentais como Estados Unidos e China. Tais países tem uma demanda enérgica muito grande, seja pelo elevado padrão de consumo ou pela alta densidade populacional.  
 
 
 ## Perspectivas para o futuro 
@@ -323,6 +371,8 @@ P3
 **Os estudos de cenários futuros indicam crescimento de todas as fontes da matriz elétrico-energétca, porém com um crescimento relativo mais acentuado da energia eólica.** Espera-se uma redução da participação de hidrelétricas devido aos desafios socioambientais e econômicos enfrentados por esse tipo de geração, tendo em vista que os recursos hídricos com potencial de uso encontram-se em locais ambientalmente mais frágeis e distantes dos locais de maior consumo. Os contratos já firmados após leilões da ANEEL apontam para a manutenção da tendência de desenvolvimento e de crescimento do setor. A ABEEólica prevê que o volume projetado e a capacidade instalada alcancem 28 GW até 2024 (CicloVivo).  
 
 A energia elétrica de origem eólica é a que tem maior potencial de crescimento nos próximos anos, com vantagens econômicas e ambientais, mas com maiores desafios operacionais por ser uma fonte variável e não controlável.
+
+**Com relação à capacidade total de produção no país, o Atlas do Potencial Eólico Brasileiro conforme CEPEL (2001) estimou em 143,5 GW em terra firme (onshore), o que indica haver possibilidades amplas de expansão do setor no longo prazo. Embora não haja ainda uma atualização deste atlas, muitos atlas estaduais foram produzidos nos últimos anos, neste sentido, a ABEEólica estima um potencial de mais de 800 GW on shore considerando o avanço da tecnologia com aerogeradores mais altos e potência de máquina maior, aumentando em grande grau a produtividade por máquina e permitindo a identificação de potenciais antes não explorados.** [Consultoria]
 
 2029
 
