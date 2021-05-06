@@ -1,0 +1,33 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1620235013991.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "600B1D83",
+    "lastKnownWriteTime" : 7287422521198649957,
+    "last_content_update" : 1620235013991,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "B6CF1045",
+        "caption" : "paises",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=paises&cache_key=B6CF1045",
+        "displayedObservations" : "10",
+        "environment" : "",
+        "expression" : "paises",
+        "object" : "paises",
+        "preview" : "0",
+        "totalObservations" : "10",
+        "variables" : "2"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

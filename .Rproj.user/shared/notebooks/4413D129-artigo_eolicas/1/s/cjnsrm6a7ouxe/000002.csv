@@ -12,3 +12,6 @@
 "0","library(leaflet)"
 "0","library(sf)"
 "0","library(rgdal)"
+"0","library(treemapify)"
+"0","library(reshape2)"
+"0","library(randomcoloR)"

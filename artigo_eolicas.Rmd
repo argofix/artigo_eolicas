@@ -36,6 +36,9 @@ library(forcats)
 library(leaflet)
 library(sf)
 library(rgdal)
+library(treemapify)
+library(reshape2)
+library(randomcoloR)
 ```
 
 
@@ -45,7 +48,7 @@ library(rgdal)
 
 O Brasil conta atualmente (2021) com cerca de 212 milhões de habitantes, distribuídos de forma irregular num território de dimensões continentais, com marcantes diferenças geográficas e de desenvolvimento socioeconômico. As atividades cotidianas desse contigente populacional resultam numa demanda de geração, transmissão e distribuição de aproximadamente 480.000 GWh de energia elétrica.  
 
-O setor elétrico nacional é responsável não apenas por atender essa demanda, mas também por pensar e planejar o atendimento da demanda futura, decorrente do crescimento populacional e consequente incremento nas atividades sociais e econômicas voltadas ao bem-estar da população. Este setor é composto por quatro principais agências, reponsáveis por diferentes aspectos da geração, transmissão e distribuição da energia elétrica no país:
+O setor elétrico nacional é responsável não apenas por atender essa demanda, mas também por pensar e planejar o atendimento da demanda futura, decorrente do crescimento populacional e do consequente incremento nas atividades sociais e econômicas voltadas ao bem-estar da população. Este setor é composto por quatro principais agências, reponsáveis por diferentes aspectos da geração, transmissão e distribuição da energia elétrica no país:
 
 * ONS - Operador Nacional do Sistema – controla e coordena a operação das instalações de geração e transmissão de energia elétrica, com foco na continuidade, segurança e despacho econômico na operação das instalaçãoes. Opera o Sistema Interligado Nacional (SIN), composto por mais de 100.000 km de linhas e centenas de usinas;
 * ANEEL – Agência Nacional de Energia Elética – regulamenta e fiscaliza as atividades de geração, transmissão, distribuição e comercialiação de energia elética; 
@@ -94,14 +97,13 @@ Figura 1. Composição da matriz eletro-energética do Brasil em 2020. As hidrel
 
 ## O planejamento do setor elétrico
 
-O planejamento da expansão do setor elétrico ou, ao menos, algumas diretrizes para tal expansão, podem ser encontradas em documentos como o Planejamento Integrado de Recursos (PIR) e os Planos Decenais de Expansão (PDE). O PIR é um estudo elaborado a partir de análises feitas no lado da carga e da geração, combinando as soluções encontradas que geram menores custos econômico, social e ambiental para o país. O PDE, elaborado anualmente pela Empresa de Pesquisa Energética (EPE), tem como objetivo indicar indicar as perspectivas, sob a ótica do Governo, da expansão do setor de energia no horizonte de 10 anos, numa visão integrada para os diversos recursos energéticos, visando ampliar a confiabilidade, reduzir os custos de produzação e mitigar os impactos ambientais (PDE 2029). Os dados e informações desses estudos destinam-se a informar as instâncias governamentais e a sociedade civil, e a subsidiar as empresas privadas interessadas na tomada de decisão e avaliação quanto à viabilidade de implantação de negócios no setor. Tais documentos não são específicos para a energia eólica, mas contemplam também essa fonte de geração.   
+Reflexões e diretrizes para a expansão do setor elétrico podem ser encontradas em documentos como o Planejamento Integrado de Recursos (PIR) e os Planos Decenais de Expansão (PDE). O PIR é um estudo elaborado a partir de análises feitas no lado da carga e da geração, combinando as soluções encontradas que geram menores custos econômico, social e ambiental para o país. O PDE, elaborado anualmente pela Empresa de Pesquisa Energética (EPE), tem como objetivo indicar indicar as perspectivas, sob a ótica do Governo, da expansão do setor de energia no horizonte de 10 anos, numa visão integrada para os diversos recursos energéticos, visando ampliar a confiabilidade, reduzir os custos de produzação e mitigar os impactos ambientais (PDE 2029). Os dados e informações desses estudos destinam-se a informar as instâncias governamentais e a sociedade civil, e a subsidiar as empresas privadas interessadas na tomada de decisão e avaliação quanto à viabilidade de implantação de negócios no setor. Tais documentos não são específicos para a energia eólica, mas contemplam também essa fonte de geração.   
 
-A exploração econômica da energia eólica depende da existência e disponibilidade de áreas com ocorrência de ventos regulares e constantes (velocidade média de 6,0 a 9,5 m/s), usualmente encontrados em áreas mais altas ou em algumas áreas baixas sem barreiras naturais ou artificiais. Além disso, são também importantes a direção, regime e sazonalidade do vento. De modo geral, as melhores áreas para aproveitamento eólico situam-se nas extremidades do sistema elétrico, distantes da geração hidrelétrica (Atlas do Potencial Eólico Brasileiro).
+A exploração econômica da energia eólica depende da existência e disponibilidade de áreas com ocorrência de ventos regulares e constantes (velocidade média de 6,0 a 9,5 m/s), usualmente encontrados em áreas mais altas ou em algumas áreas baixas sem barreiras naturais ou artificiais. Além disso, são também importantes a direção, regime e sazonalidade do vento. De modo geral, as melhores áreas para aproveitamento eólico situam-se nas extremidades do sistema elétrico, distantes da geração hidrelétrica (Atlas do Potencial Eólico Brasileiro, 2001).
 
-Os dados relativos ao comportamento do vento, que auxiliam na determinação do potencial eólico da
-região, são relativos à intensidade da velocidade e à direção do vento. Para obter esses dados, é necessário também analisar os fatores que influenciam o regime dos ventos na localidade do empreendimento. Dentre eles, pode-se citar o relevo, a rugosidade do solo e outros obstáculos distribuídos ao longo da região.[Plano Nacional de Energia 2030]  
+Os principais aspectos relativos ao comportamento do vento que possibilitam a avaliação do potencial eólico de uma dada região consistem de sua sua intensidade, regularidade e direção. Além de padrões gerais em nível regional e nacional, é necessário também analisar os fatores que influenciam o regime dos ventos na localidade do empreendimento, tais como relevo, rugosidade do solo e outros obstáculos distribuídos ao longo da região.[Plano Nacional de Energia 2030]  
 
-Os estudos de potencial eólico são fundamentais para o planejamento da implantação de empreendimentos eólicos no país. O primeiro Atlas do Potencial Eólico Brasileiro estimou um potencial eólico para o país da ordem de 143,5 GW (Figura 2), com as regiões Nordeste (75 GW - 52,3%), Sudeste (29,7 GW - 20,7%) e Sul (22,8 GW - 15,8%) respondendo por 88,8% desse total. O potencial estimado para as regiões Norte e Centro-Oeste foi de 12,8 GW (8.9%) e 3.1 GW (2,1%), respectivamente.
+Os estudos de potencial eólico são fundamentais para o planejamento da implantação de empreendimentos eólicos no país. O primeiro Atlas do Potencial Eólico Brasileiro, produzido em 2001, estimou um potencial eólico para o país da ordem de 143,5 GW (Figura 2), com as regiões Nordeste (75 GW - 52,3%), Sudeste (29,7 GW - 20,7%) e Sul (22,8 GW - 15,8%) respondendo por 88,8% desse total. O potencial estimado para as regiões Norte e Centro-Oeste foi de 12,8 GW (8.9%) e 3.1 GW (2,1%), respectivamente.
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
@@ -191,11 +193,11 @@ Figura 2. Distribuição do potencial eólico das regiões do país (Fonte: Atla
 
 A região Nordeste apresenta as melhores condições do Brasil para o aproveitamento da energia eólica. Nessa região, não apenas os regimes dos ventos são muito favoráveis, mas a vazão dos rios que atendem algumas usinas hidrelétricas é menor justamente quando ocorrem as melhores incidências de vento, demonstrando a complementariedade dessas fontes. [Plano Nacional de Energia 2030]  
 
-Uma versão atualizada do Atlas de Potencial Eólico Brasileiro com informações mais refinadas e com estimativas para diversas faixas de altura, contemplando inclusive aquelas condizentes com aerogeradores mais modernos (100, 120, 150 e 200 metros), pode ser consultada no sítio eletrônico [Atlas Eólico Brasileiro - Simulações 2013](http://novoatlas.cepel.br/). Além dessas informações em escala nacional, alguns estados como ????????? contam com estudos específicos (????).  
+Uma versão atualizada do Atlas de Potencial Eólico Brasileiro com informações mais refinadas e com estimativas para diversas faixas de altura, contemplando inclusive aquelas condizentes com aerogeradores mais modernos (100, 120, 150 e 200 metros), pode ser consultada no sítio eletrônico [Atlas Eólico Brasileiro - Simulações 2013](http://novoatlas.cepel.br/). Além dessas informações em escala nacional, diversos estados (SP, ES, BA, RN, CE, RS, PE, PB, AL, MG, PR e RJ) contam com estudos específicos, disponíveis no sítio eletônico do [Centro de Referências para as Energias Solar e Eólica Sérgio de S. Brito - CRESESB](http://www.cresesb.cepel.br/).  
 
 ## Cenário atual da energia eólica no país 
 
-A energia elétrica de origem eólica é gerada por meio de aerogeradores ou turbinas eólicas. Essas estruturas devem estar distribuidas em áreas com abundância de ventos em condições favoráveis, devendo ainda estar ligadas a estururas associadas como subestações e linhas de transmissão, para escoamento da energia produzida.  
+A energia elétrica de origem eólica é gerada por meio de aerogeradores ou turbinas eólicas. Esses equipamentos devem estar distribuidos em áreas com abundância de ventos em condições favoráveis, devendo ainda estar ligados a estruturas associadas como subestações e linhas de transmissão, para escoamento da energia produzida.  
 
 Em geral, os aerogeradores são formados pelas serguintes partes:
 
@@ -356,51 +358,126 @@ Figura 6. Número de parques eólicos instalados por estado. Bahia e Rio Grande 
 
 ### Parques eólicos *offshore*
 
-?????
+Apesar de contar com alguns projetos em licenciamento ambiental em curso, até o momento (2021) o Brasil ainda não possui nenhum empreendimentos eólico *offshore* em funcionamento.  
+
+O mapeamento preliminar do potencal eólico *offshore* para as águas jurisdicionais brasileiras identificou áreas com ventos superiores a ?? m/s, abrindo novas perspectivas para a possível exploração desse recurso energético. [Plano Nacional de Energia 2050] Segundo a EPE, o potencial do país para a geração de energia eólica *offshore* é muito grande, da ordem 700 GW em locais com profundidade até 50 m [Roadmap]. As informações sobre esse potencial, entretanto, são ainda limitadas, necessitando de aprofundamento em relação a aspectos ambientais, usos conflitantes, aspectos tecnológicos e normativos.  
+
+Especificamente em relação a aspectos sociambientais, destacam-se as áreas legalmente protegidas, pesca comercial e artesanal, rotas migratórias, esfeitos na paisagem, impactos sobre atividades de turismo e recreaçãoDados meteorológicos, áreas de pesca tradicional e artesanal, rotas migratórias (mamíferos, aves, répteis), impato sonoro (especialmente durante a construção), alteração de campo eletromagnético, dentre outros. Tais aspectos serão tratados de forma detalhada em capítulo específico deste relatório. Destacamos a importância de que os diferentes aspectos envolvidos na exploração *offshore* sejam consideração de forma integrada e em escalas compatíveis para um planejamento adequado desse tipo de empreendimento.  
+
+Além disso, tendo em vista que esse tipo de exploração tende a utilizar turbinas maiores e de maior capacidade nominal, desafios relacionados à logística de instalação e de manutenção, além da conexão para escoamento da energia ao continente e da capacidade de integração com os sistemas de transmissão e distribuição já existentes, deverão ser enfrentados (adequação de rodovias e portos para apoio à instalação e manutenção das estruturação de geração e transmissão). Assim como no ambiente *onshore*, as questões relacionadas ao descomissionamento devem ser também consideradas no planejamento dos empreendimentos *offshore*.
+
 
 
 ### O Brasil no cenário mundial
 
-A Dinamarca foi pioneira no uso comercial da energia eólica, tendo iniciado sua utilização na década de 70 (Aneel, 2003). Outros países europeus como Holanda, Bélgica, Suécia, Reino Unido e Alemanha também logo investiram nesse tipo de energia [Consultoria]. Posteriormente, inpulsionados pelo aumento da demanda por energia em razão do crescimento econômico, aliado à crises de oferta e preços de fontes não renováveis, em especial do petróleo, outros países como Estados Unidos, Espanha, Portugal e China também passaram a investir de forma significativa na exploração da energia eólica.
+A Dinamarca foi pioneira no uso comercial da energia eólica, tendo iniciado sua exploração na década de 70 (Aneel, 2003). Outros países europeus como Holanda, Bélgica, Suécia, Reino Unido e Alemanha também logo investiram nesse tipo de energia [Consultoria]. Posteriormente, inpulsionados pelo aumento da demanda por energia em razão do crescimento econômico, aliado à crises de oferta e preços de fontes não renováveis, em especial do petróleo, outros países como Estados Unidos, Espanha, Portugal e China também passaram a investir de forma significativa na exploração da energia eólica.
 
-O Brasil tem um grande potencial de exploração e, em pouco mais de duas décadas, teve um avanço muito significativo na sua capacidade instalada. Atualmente ocupa a ???? posição no *ranking* mundial de uso de energia eólica (Figura 7). Apesar do bom desempenho, encontra-se distante de países também continentais como Estados Unidos e China. Tais países tem uma demanda enérgica muito grande, seja pelo elevado padrão de consumo ou pela alta densidade populacional.  
+O ano de 2020 foi o melhor ano da história para a indústria eólica em termos globais, com um total de 93 GW de nova capacidade instalada [Global Wind Report 2021]. O recorde de 2020 deu-se devido ao crescimento acentuado na China e nos Estados Unidos, os dois maiores mercados mundiais de energia eólica que, juntos, instalaram cerca de 75% da quantidade instalada em 2020, passando a responder por mais da metade da capacidade instalada mundial. Atualmente, a capacidade instalada mundial soma 743 GW (707 GW - 95% *onshore* e 36 GW - 5% *offshore*), ajudando a evitar a emissão de mais de 1.1 bilhões de toneladas de CO2 para a atmosfera, o que equivale à emissão total anual de carbono da América do Sul.[Global Wind Report 2021]
 
+O Brasil tem um grande potencial de exploração e, em pouco mais de duas décadas, teve um avanço muito significativo na sua capacidade instalada. Em 2019 o Brasil subiu uma posição no *ranking* e passou a ocupar a 7ª posição no mundo em termos de potência instalada de energia eólica (Figura 7). Apesar do bom desempenho, encontra-se distante de países também continentais como Estados Unidos e China. Tais países têm uma alta demanda enérgica, seja pelo elevado padrão de consumo de sua população ou pela alta densidade populacional, e têm mantido um contínuo crescimento de seu potencial de geração de energia eólica.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
+
+paises <- read.csv("dados/paises.csv", h=T, sep=";")
+
+mycolors <- c("#dbead5", "#A2D8A2", "#677E67","#458B41", "#dbead5", "#A2D8A2", "#677E67","#458B41", "#dbead5", "#A2D8A2")
+
+#blues <- brewer.pal('Blues', n = 10)
+
+# G7 <- paises %>%
+#         plot_ly(labels = ~pais,
+#         values = ~pot_inst,
+#         marker = list(colors = mycolors)) %>%
+# add_pie(hole = 0.4) %>%
+# layout(xaxis = list(zeroline = F,
+#                     showline = F,
+#                     showticklabels = F,
+#                     showgrid = F),
+#        yaxis = list(zeroline = F,
+#                     showline = F,
+#                     showticklabels=F,
+#                     showgrid=F))
+# G7
+
+n <- 10
+cores <- distinctColorPalette(n)
+
+G7 <- ggplot(data = paises, aes(fill = pais, area = pot_inst, label = paste0(pais, "\n", prettyNum(pot_inst, big.mark="."))))
+G7 <-  G7 + geom_treemap()
+G7 <-  G7 + geom_treemap_text(color = "white", place = "centre")
+G7 <-  G7 + theme(legend.position = "none")
+G7 <-  G7 + scale_fill_manual(values = cores)
+G7
+
+```
+
+Figura 7. Em 2019 o Brasil assumiu a 7ª posição no *ranking* dos países com maio capacidade de geração de energia eólica. Os valores indicam o potencial instalado em MW.
+
+</br>
 
 ## Perspectivas para o futuro 
 
-**Os estudos de cenários futuros indicam crescimento de todas as fontes da matriz elétrico-energétca, porém com um crescimento relativo mais acentuado da energia eólica.** Espera-se uma redução da participação de hidrelétricas devido aos desafios socioambientais e econômicos enfrentados por esse tipo de geração, tendo em vista que os recursos hídricos com potencial de uso encontram-se em locais ambientalmente mais frágeis e distantes dos locais de maior consumo. Os contratos já firmados após leilões da ANEEL apontam para a manutenção da tendência de desenvolvimento e de crescimento do setor. A ABEEólica prevê que o volume projetado e a capacidade instalada alcancem 28 GW até 2024 (CicloVivo).  
+Análises de cenários futuros indicam o crescimento de todas as fontes da matriz elétrico-energétca brasileira, porém com um crescimento relativo mais acentuado da energia eólica. Espera-se uma redução da participação de hidrelétricas devido aos desafios socioambientais e econômicos enfrentados por esse tipo de geração, tendo em vista que os recursos hídricos com potencial de uso encontram-se em locais ambientalmente mais frágeis e distantes dos locais de maior consumo. Com base nos contratos já firmados nos leilões da ANEEL a tendência de crescimento do setor deverá ser mantida nos próximos anos. A ABEEólica prevê que o volume projetado e a capacidade instalada alcancem 28 GW até 2024 (CicloVivo).  
 
 A energia elétrica de origem eólica é a que tem maior potencial de crescimento nos próximos anos, com vantagens econômicas e ambientais, mas com maiores desafios operacionais por ser uma fonte variável e não controlável.
 
-**Com relação à capacidade total de produção no país, o Atlas do Potencial Eólico Brasileiro conforme CEPEL (2001) estimou em 143,5 GW em terra firme (onshore), o que indica haver possibilidades amplas de expansão do setor no longo prazo. Embora não haja ainda uma atualização deste atlas, muitos atlas estaduais foram produzidos nos últimos anos, neste sentido, a ABEEólica estima um potencial de mais de 800 GW on shore considerando o avanço da tecnologia com aerogeradores mais altos e potência de máquina maior, aumentando em grande grau a produtividade por máquina e permitindo a identificação de potenciais antes não explorados.** [Consultoria]
+Considerando os mapeamentos do potencial eólico do país, tanto em larga escala quanto nos estudos estaduais, há ainda uma ampla capacidade de expansão do setor no longo prazo, ambos *onshore* quanto *offshore*. O aprimoramento tecnológico e o uso de aerogeradores mais altos e potência de máquina maior, aumentando em grande grau a produtividade por máquina deverá favorecer esse crescimento e a exploração desse potencial. [Consultoria]  
 
-2029
+Estima-se que em 2029 a energia hidrelétrica responda por 49% da matriz elétrica ao tempo que as energias eólica, solar, de biomassa e PCHs respondam, juntas, por 33% da matriz (Figura 8). [2029, EPE]. 
 
-Hidéletricas (médio e grande porte) - 49%
-PCH + Eol + Bio + Sol - 33%
-Térmicas - 18%
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
 
-Mesmo com sua redução em termos relativos, a energia de origem hidráulica continuará cumprindo um importante papel em assegurar a estabilidade do sistema, visto haver uma complementariedade sazonal entre essas fontes. Deverá se contar ainda, nesse papel, com a participação das termelétricas, prevendo-se também a modernização de parte dessas usinas para ganho de eficiência. O sistema tenderá a manter uma matriz com fontes predominantemente renováveis, não emissoras de gases de efeito estufa, pricalmente devido à ampliação fontes de energia eólica e solar.
+mycolors1 <- c("#dbead5", "#A2D8A2", "#677E67")
+
+matriz_2029 <- data.frame(
+  fonte = c("Hidrelétrica", "PCH + Eol + Bio + Sol", "Térmica"),
+  Percentagem = c(49, 33, 18)
+)
+
+G8 <- matriz_2029 %>%
+        plot_ly(labels = ~fonte,
+        values = ~Percentagem,
+        marker = list(colors = mycolors1)) %>%
+add_pie(hole = 0.4) %>%
+layout(xaxis = list(zeroline = F,
+                    showline = F,
+                    showticklabels = F,
+                    showgrid = F),
+       yaxis = list(zeroline = F,
+                    showline = F,
+                    showticklabels=F,
+                    showgrid=F))
+G8
+
+```
+
+Figura 8. Composição da matriz eletro-energética do Brasil em 2029. As hidrelétricas incluem empreendimentos de médio e grande porte. PCH - pequenas centrais hidrelétricas; Eol - Eólicas; Bio - Biomassa; Sol - Solar.
+
+
+Mesmo com sua redução em termos relativos, a energia de origem hidráulica continuará cumprindo um importante papel em assegurar a estabilidade do sistema, visto haver uma complementariedade sazonal entre essas fontes. Deverá se contar ainda, nesse papel, com a participação das termelétricas, prevendo-se também a modernização de parte dessas usinas para ganho de eficiência. O sistema tenderá a manter uma matriz com fontes predominantemente renováveis, não emissoras de gases de efeito estufa, principalmente devido à ampliação fontes de energia eólica e solar.
 
 Há previsão de investimentos da ordem de 104 bilhões para expansão das linhas de transmissão e subestações no sistema para dar suporte ao escoamento da energia gerada por diversas fontes nas diferentes regiõeas do país, com ênfase nas áreas norte, leste e sul da região Nordeste, além de obras de expansão na região Sul. Está prevista uma ampliação de cerca de 30% nas linhas de transmissão num período de 10 anos, indo de 154 mil km em 2019 para 203 mil km em 2029 (implantação de 49 mil km de linhas). Esse crescimento deverá ser acompanhado por uma ampliação de cerca de 45% nas subestações, passando de 385 mil MVA em 2019 para 557 mil MVA em 2029 (crescimento de 161 mil MVA).
 
-A expansão observado no Brasil nos últimos anos refere-se somente a projetos *onshore*. No contexto global regiões *offshore* representam a última fronteira para o desenvolvimento da energia eólica, com aumento expressivo na exploração dessa fonte em diversos países. No caso do brasil, o mapeamento preliminar do potencal eólico *oddshore* para as águas jurisdicionais brasileiras identificou áreas com ventos superiores a ?? m/s, abrindo novas perspectivas para a possível exploração desse recurso energético. [Plano Nacional de Energia 2050]
+A expansão observada no Brasil nos últimos anos refere-se somente a projetos *onshore*. No contexto global regiões *offshore* representam a última fronteira para o desenvolvimento da energia eólica, com aumento expressivo na exploração dessa fonte em alguns países. No caso do Brasil, o mapeamento preliminar do potencal eólico *offshore* indica a possibilidade de que tal crescimento também ocorra no país a partir do sucesso das primeiras iniciativas de exploração dessa modalidade. [Plano Nacional de Energia 2050]
 
 
 ### Avanços tecnológicos
 
-O aumento da altura das torres, da área de varredura das pás e da potência nominal dos aerogeradores são alguns dos principais vetores de redução dos custos relativos associados aos pfojetos eólicos. Há uma tendência internacional no uso de torres e pás cada vez maiores, ois tal aumento tem viabilizado melhor aproveitamento do recurso eólico e tem permitido o aumento do fator de capacidade nos locais onde o recurso possui determinadas características como menores variações de velocidade do vento e espectro de velocidades mínimas e máximas.  Além disso, o aumento dos aerogeradores demanda inovações e melhorias no setor de transporte e nas infraestruturas que o possibilitam. Para não extrapolar o peso das pás novas tecnologias de materiais deverão ser introduzidas nos próximos anos como alternativas à fibra de vidro. Isso pode incluir, por exemplo, o uso de fibras de carbono ou fibras híbridas de vidro e carbono. Além disso, alguns fabricantes estão testando pás modulares para compensar os problemas logísticos, mas essa tecnologia ainda não está consolidada.
+Os custos relativos à implantação dos projetos eólicos tendem a se reduzir ao longo do tempo, resultado dos avanços tecnológicos como o aumento da altura das torres, a evolução do material de composição das pás, a ampliação de sua área de varredura e o aumento da potência nominal dos aerogeradores. Em relação à alura das torres dos parques eólicos *onshore*, dados de projetos cadastrados nos leilões do ambiente regulado indicam uma tendência de crescimento na média da altura dos aerogeradores, atingindo maior média em ????? com ???? metros. [2050]  Em relação às pás, novos materiais como fibras de carbono ou fibras híbridas de vidro e carbono  poderão vir a ser empregadas na confecção dessas estruturas para redução de peso. A tendência de aumento do tamanho de torres e pás tende a ampliar o fator de capacidade sob determinadas condições de vento. Além disso, aerogeradores maiores exigirão adequações e inovações para possibilitar a logística de armazenamento e transporte das estruturas que os compõem.    
 
-No mesmo sentido, os avanços tecnológicos registrados no segmento eólico *offshore* têm proporcionado redução de cstos. A característica mais marcante dos projetos eólicos *offshore* é o uso de aerogerados maiores, com diâmetro do rotor médio de ???? m e potência nominal superior a ??? MWh. Além disso, a instalação de parques eólicos *offshore* em locais de maior profundidade poderá demandar o uso de outros tipos de fundações, a exemplo das flutuantes, como suporte aos aerogeradors. Em relação à alura das torres dos parques eólicos *onshore*, analisando a base de dados de projetos cadastrados nos leilões do ambiente regulado nota-se uma tendência de crescimento na média da altura dos aerogeradores, atingindo maior média em ????? com ???? metros. [2050]  
+Na modalidade *offshore* inovações tecnólicas como o uso de fundações flutuantes estão sendo estudadas para permitir o suporte de aerogeradores e a exploração em áreas mais profundas. O uso de aerogeradores maiores também se aplica à exploração *offshore*, com redução de custos. O uso de grandes aerogeradores é uma das principais características dos projetos eólicos *offshore*, com diâmetro do rotor médio de ???? m e potência nominal superior a ??? MWh.  
 
 ### Alguns desafions
 
-* Lidar com uma matriz com grande percentual de geração variável e menor capacidade de controle;
-* Melhorar a logística de transporte dos equipamentos eólicos (tendo em vista a tendência de aumento de seu tamanho e peso) - estrutura viária precária na região Nordeste para as necessidades desse tipo de empreendimento, assim como no caso de infraestrutura de navegação e portuária, nos caso de eólicas *offshore*;
-* Capacidade portuária com vistas ao desenvokvimento eólico *offshore* (para instalação e operação - manutenção);
-* Incorporar melhorias aos estudos socioambientais desenvolvidos para projetos eólicos em uma perspectiva de
-aumento da complexidade decorrente de efeitos cumulativos. Considerando a tendência de implantação de múltiplos projetos eólicos em localidades próximas torna-se cada vez mais necessário incorórar a identificação e a avaliação dos impactos ambiental cumulativos nos estudos submetidos ao licenciamento ambiental de projetos eólicos. A inclusão desses parâmetros de avaliação de impacto nos estudos fornece i portantes subsídios para a tomada de decisão quanto à implantação de empreendimentos eólicos e, por sua vez, favorece a proposição integrada de medidas de controle ou mitigação de impactos para os projetos que venham a ser implantaddos em uma mesma região.
-* Integrar as perspectivas de expansão da geração eólica e o planejamento da expansão da transmissão - O recurso eólico possui alta variabilidade horária e sua integração em larga escala deve ser acompanhada por inovações no planejamento e na operação do SIN. Em particuluar, a necessidade de escoar a energia dos parques eólicos já licitados e de fornecer folga ao sistema elétrico de transmissão para conexaão de futuros empreendimentos implica contínuo redimensionamento da Rede Básica, especialmente na região Nordeste, que é onde se encontra a maior parte do potencial eólico brasileiro. Soma-se a isso o fato de que os maiores centros de carga estão presentes nas regiões Sul e Sudeste, ampliando a necesssidade de regoros de forma a garantir que os intercâmbios elétricos entre o subsistemas sejam possíveis. O avanço tecnológico previsto para os aerogeradores, juntamento com a possibiliade de dessenvolvimento de plantas de gração híbridas eólico-solar, por exemplo, e de projetos eólicos *offshore* poderão representar novos desafios para o planejamento da expansão da transmissão.
-*offshore* - lacunas da legislação marítima vigente que não contemplam efeitos desse tipo de intervenção no ambiente.
-* Repontenciação e descomissionamento dos parques eólicos - normas para descomissionamento e viabiliade de repotenciação, além de impactos no sistema (atendimento da demanda e flexibilização. Considerando que os contratos da fonte eólica nos Leilões têm, em geral, duração de 20 anos, prazo equivalente à vida útil de projeto dos equipamentos, percebe-se que os empreendimentos em operação desde os anos 90 já atingiram essa idade. Já os primeiros projetos contratados no âmbito do PROINFA atingirão esse tempo nos próximos 5 anos. Até 2030, mais de 50 parques alcançarão a faixa dos 20 anos de operação, representando mais de 600 aerogeradores e de 940 MW de potência. Assim, evidencia-se a importância em discutir possíveis ações após esse período, sejam elas de manutenção, modernização ou descomissionamento dos parques eólicos instalados; [NT Descomissionamento] 
-* Arcabouço legal e regulatório para implantação de eólicas 
+O crescimento e a diversificação da matriz elétrica num país como o Brasil, com crescimento expressivo da energia eólica, implica, necessariamente, no enfrentamento e superação de uma série de desafios. As agências do Sistema Elétrico Nacional precisam se preparar para lidar com uma matriz com grande percentual de geração variável e menor capacidade de controle.  
+
+Um dos desafios da etapa de planejamento é incorporar nos estudos sociambientais prévios análises integradas que considerem o aumento da complexidade e os impactos cumulativos ou sinérgicos de diversos empreendimentos localizados próximos. Em que pesem a dificuldades metodológicas e de acesso e compartilhamento de dados e informações entre empreendimentos, a consideração desses potenciais efeitos nos estudos exigidos pelos órgãos licenciadores pode contribuir para a identificação de impactos ambientais relevantes e possibilitar a proposição de medidas integradas de controle ou mitigação para projetos implantados numa mesma região. 
+
+A implantação de novos parques eólicos exige também o aprimoramento da logística de transporte dos equipamentos (tendo em vista a tendência de aumento de seu tamanho e peso). Na modalidade *onshore* os desafios são as estradas e rodovias que, em geral, não apresentam condições apropriadas para o transporte das estruturas desse tipo de empreendimento. Já para a exploração *offshore* o desafio são as limitações da infraestrutura portuária e de navegação.  
+
+Outro ponto importante consiste na necessidade de integração do planejamento e ações de expansão da geração eólica com o planejamento e implantação da transmissão. O recurso eólico possui alta variabilidade horária e sua integração em larga escala no SIN implica contínuo redimensionamento da Rede Básica, especialmente na região Nordeste, que é onde se encontra a maior parte do potencial eólico brasileiro. Os maiores centros de carga estão nas regiões Sul e Sudeste, ampliando a necesssidade de ajustes para garantir os intercâmbios elétricos entre o subsistemas. O avanço tecnológico previsto para os aerogeradores e a possibiliade de desenvolvimento de plantas de geração híbridas eólico-solar e de projetos eólicos *offshore* poderão representar novos desafios para o planejamento da expansão da transmissão.  
+
+A elaboração ou adequação de normativas para dar suporte e segurança jurídica ao desenvolvimento do setor é também fundamental. Faz-se necessario um arcabouço legal e regulatório que contemple os diferentes aspectos do setor (ambiental, social, comercial etc.). No caso da exploração *offshore*, por exemplo, há lacunas na legislação marítima vigente que, não contempla ainda os efeitos desse tipo de intervenção no ambiente.  
+
+Por fim, é preciso se avançar no aspectos da repontenciação e descomissionamento dos parques eólicos. São necessárias normas para descomissionamento e análise da viabiliade de repotenciação, além de impactos no sistema (atendimento da demanda e flexibilização. Considerando uma vida média dos equipamentos como 20 anos, o Brasil já possui parques que se encontram no momento dessa avaliação com vistas à repontencição ou descomissionamento. Segundo o [Descomissionamento], até 2030, mais de 50 parques alcançarão a faixa dos 20 anos de operação, representando mais de 600 aerogeradores e de 940 MW de potência. Assim, evidencia-se a importância em discutir possíveis ações após esse período, sejam elas de manutenção, modernização ou descomissionamento dos parques eólicos instalados. [NT Descomissionamento] 
