@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1619188259851.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "7155B693",
+    "lastKnownWriteTime" : 1612986365,
+    "last_content_update" : 1612986365,
+    "path" : "C:/Projetos/Cursos_Anilhamento/index.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "709,46",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

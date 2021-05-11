@@ -1,11 +1,11 @@
-pais;pot_inst
-China;229564
-Estados Unidos;105436
-Alemanha;53913
-Índia;37509
-Espanha;25803
-França;16643
-Brasil;15449
-Reino Unido;13617
-Canada;13413
-Itália;10512
+pais;pot_inst;ranking
+China;229564;10
+Estados Unidos;105436;9
+Alemanha;53913;8
+Índia;37509;7
+Espanha;25803;6
+França;16643;5
+Brasil;15449;4
+Reino Unido;13617;3
+Canada;13413;2
+Itália;10512;1
